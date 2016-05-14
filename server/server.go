@@ -25,19 +25,19 @@ type Index struct {
 }
 
 func (idx *Index) Lookup(needle string) []Message {
-  results := []Message{}
+	results := []Message{}
 
-  matches := map[int]struct{}{}
+	matches := map[int]struct{}{}
 
-  for _, offset := range idx.index.Lookup([]byte(needle), -1) {
-    matches[offset] = struct{}{}
-  }
+	for _, offset := range idx.index.Lookup([]byte(needle), -1) {
+		matches[offset] = struct{}{}
+	}
 
-  for offset, _ := range matches {
-    results = append(results, idx.Messages[idx.Offsets[offset]])
-  }
+	for offset, _ := range matches {
+		results = append(results, idx.Messages[idx.Offsets[offset]])
+	}
 
-  return results
+	return results
 }
 
 func ReadJSON(path string, obj interface{}) error {
@@ -73,7 +73,7 @@ func BuildIndex() Index {
 
 	idx.Messages = ReadFiles("../fetcher/files")
 
-  data := []byte{}
+	data := []byte{}
 	for i, msg := range idx.Messages {
 		data = append(data, []byte(msg.Id)...)
 		data = append(data, 0)
@@ -85,16 +85,23 @@ func BuildIndex() Index {
 		}
 	}
 
-  idx.index = suffixarray.New(data)
+	idx.index = suffixarray.New(data)
 	return idx
+}
+
+type Settings struct {
+	Listen string `json:"listen"`
 }
 
 func main() {
 	idx := BuildIndex()
 
 	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
-    json.NewEncoder(w).Encode(idx.Lookup(r.URL.Query().Get("term")))
+		json.NewEncoder(w).Encode(idx.Lookup(r.URL.Query().Get("term")))
 	})
 
-	http.ListenAndServe(":3000", nil)
+	settings := Settings{}
+	ReadJSON("config/settings.json", &settings)
+
+	http.ListenAndServe(settings.Listen, nil)
 }
