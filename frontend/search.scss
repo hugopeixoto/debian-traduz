@@ -1,0 +1,57 @@
+#search {
+  max-width: 920px;
+  margin: 0px auto;
+  h1 {
+    text-align: center;
+    display: block;
+    line-height: 60px;
+    font-family: Georgia;
+  }
+
+  .searchbox {
+    margin: 0px auto;
+    display: block;
+    width: 80%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 20pt;
+    padding-left: 10px;
+  }
+
+  ul.results {
+    padding: 0px;
+
+    li {
+      overflow: auto;
+      padding: 20px;
+      border: 1px solid #333;
+      border-width: 0px 1px 1px 1px;
+      &:first-child {
+        border-top-width: 1px;
+      }
+
+      margin: 0px;
+
+      span.title {
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      span.msgid {
+        float: left;
+        width: 50%;
+        margin-right: 20px;
+        display: block;
+      }
+
+      span.msgstr {
+        display: block;
+        overflow: auto;
+      }
+
+      span.highlighted {
+        background-color: yellow;
+      }
+    }
+  }
+}
