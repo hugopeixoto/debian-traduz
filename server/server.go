@@ -66,12 +66,12 @@ func ReadFiles(path string) []Message {
 	return messages
 }
 
-func BuildIndex() Index {
+func BuildIndex(path string) Index {
 	idx := Index{
 		Offsets: []int{},
 	}
 
-	idx.Messages = ReadFiles("../fetcher/files")
+	idx.Messages = ReadFiles(path)
 
 	data := []byte{}
 	for i, msg := range idx.Messages {
@@ -90,18 +90,19 @@ func BuildIndex() Index {
 }
 
 type Settings struct {
-	Listen string `json:"listen"`
+	Listen    string `json:"listen"`
+	Directory string `json:"path"`
 }
 
 func main() {
-	idx := BuildIndex()
+	settings := Settings{}
+	ReadJSON("config/settings.json", &settings)
+
+	idx := BuildIndex(settings.Directory)
 
 	http.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(idx.Lookup(r.URL.Query().Get("term")))
 	})
-
-	settings := Settings{}
-	ReadJSON("config/settings.json", &settings)
 
 	http.ListenAndServe(settings.Listen, nil)
 }

@@ -1,3 +1,4 @@
 {
-  "listen": ":3001"
+  "listen": ":3001",
+  "path": "../fetcher/files"
 }
