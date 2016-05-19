@@ -47,11 +47,13 @@ export default class extends React.Component {
   }
 
   search(term) {
-    fetch(this.props.searchUrl + "?term=" + term).
-      then(r => r.json()).
-      then(j => j.sort((a, b) => a.Filepath.localeCompare(b.Filepath)) ).
-      then(j => {
-        this.setState({ term: term, results: j })
-      });
+    if (term.length > 2) {
+      fetch(this.props.searchUrl + "?term=" + term).
+        then(r => r.json()).
+        then(r => r.sort((a, b) => a.Filepath.localeCompare(b.Filepath))).
+        then(j => {
+          this.setState({ term: term, results: j })
+        });
+    }
   }
 }
